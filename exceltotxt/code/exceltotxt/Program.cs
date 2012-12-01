@@ -12,7 +12,7 @@ namespace exceltotxt
 
             //Excel.ReadExcelSheet("Book1.xlsx", "sheet1");
 
-            ExcelHelper test = new ExcelHelper("H:/workspace/exceltotxt/Bin/Book1.xlsx");
+            ExcelHelper test = new ExcelHelper("H:/workspace/myfirstgitproject/exceltotxt/Bin/Book1.xlsx");
 
 
             //Array testlist = 

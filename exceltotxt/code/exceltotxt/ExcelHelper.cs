@@ -5,6 +5,11 @@ using System.Data;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
 
+using System.Collections.Generic;
+using System.Text;
+
+
+
 public class ExcelHelper
 {
     private Excel._Application excelApp;
@@ -59,42 +64,47 @@ public class ExcelHelper
         Excel.Range   range = sheet.UsedRange;
         int m_maxcol    = range.Columns.Count;
         int m_row       = range.Rows.Count;
-        //String tempstring;
-        //do
-        //{
 
-               
 
-    
 
-        //    m_maxcol = m_maxcol + 1;
-        //    rang = sheet.get_Range(sheet.Cells[m_row, m_maxcol], sheet.Cells[m_row, m_maxcol]);
-        //    if (rang.)
-        //    {
-        //    }
-        //    tempstring = rang.Value2.ToString();
-        //}
+        FileStream fs = new FileStream("H:\\test.txt", FileMode.Create);
+        //获得字节数组
+        
 
-        //while (tempstring !="");
+        String tempstring;
+        for (int i = 1; i <= m_row; ++i)
+        {
+            for (int j = 1; j <= m_maxcol; ++j )
+            {
+                tempstring = Convert.ToString((range.Cells[i,j] as Excel.Range).Value2);
 
-        //读入类型数据
-         
-        //String fieldTypes[512];  
-        //String strType="";
+                 byte[] data = new UTF8Encoding().GetBytes(tempstring);
+                 //开始写入
+                 fs.Write(data, 0, data.Length);
+                 if (j != m_maxcol)
+                 {
+                     tempstring = "\t";
+                     byte[] data2 = new UTF8Encoding().GetBytes(tempstring);
+                     //开始写入
+                     fs.Write(data2, 0, data2.Length);
+                 }
+                 
+            }
 
-        //for(int i =  0; i< m_maxcol ;++i )
-        //{
+            tempstring = "\r\n";
+            byte[] data3 = new UTF8Encoding().GetBytes(tempstring);
+            //开始写入
+            fs.Write(data3, 0, data3.Length);
 
-        //}
+        }
 
-        //String  value = sheet.Cells
-        //读一个单元格内容
-        //sheet.get_Range("A1", Type.Missing);
-        //不为空的区域,列,行数目
-        //   int l = sheet.UsedRange.Columns.Count;
-        // int w = sheet.UsedRange.Rows.Count;
-        //  object[,] dell = sheet.UsedRange.get_Value(Missing.Value) as object[,];
-        System.Array values = (Array)rang.Cells.Value2;
+        //清空缓冲区、关闭流
+        fs.Flush();
+        fs.Close();
+
+  
+   
+      
         return 0;
     }
 
