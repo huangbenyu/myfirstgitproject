@@ -56,27 +56,36 @@ public class ExcelHelper
         //获取A1 到AM24范围的单元格
         Excel.Range rang = sheet.get_Range("A1", "A3");
 
-        int m_maxcol = 0;
-        int m_row     =1;
-        String tempstring;
-        do{
-            m_maxcol = m_maxcol + 1;
-            rang = sheet.get_Range(sheet.Cells[m_row, m_maxcol], sheet.Cells[m_row, m_maxcol]);
+        Excel.Range   range = sheet.UsedRange;
+        int m_maxcol    = range.Columns.Count;
+        int m_row       = range.Rows.Count;
+        //String tempstring;
+        //do
+        //{
 
-            //tempstring = rang.Value2.ToString();
-        }
+               
 
-        while (rang.Value2 != null);
+    
+
+        //    m_maxcol = m_maxcol + 1;
+        //    rang = sheet.get_Range(sheet.Cells[m_row, m_maxcol], sheet.Cells[m_row, m_maxcol]);
+        //    if (rang.)
+        //    {
+        //    }
+        //    tempstring = rang.Value2.ToString();
+        //}
+
+        //while (tempstring !="");
 
         //读入类型数据
          
-        String fieldTypes[512];  
-        String strType="";
+        //String fieldTypes[512];  
+        //String strType="";
 
-        for(int i =  0; i< m_maxcol ;++i )
-        {
+        //for(int i =  0; i< m_maxcol ;++i )
+        //{
 
-        }
+        //}
 
         //String  value = sheet.Cells
         //读一个单元格内容
