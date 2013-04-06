@@ -13,13 +13,14 @@ using System.Text;
 public class ExcelHelper
 {
     private Excel._Application excelApp;
-    private string fileName = string.Empty;
+    private string _fileName = string.Empty;
     private Excel.WorkbookClass wbclass;
-    public ExcelHelper(string _filename)
+    public ExcelHelper(string filename)
     {
+        _fileName = filename;
         excelApp = new Excel.Application();
         object objOpt = System.Reflection.Missing.Value;
-        wbclass = (Excel.WorkbookClass)excelApp.Workbooks.Open(_filename, objOpt, false, objOpt, objOpt, objOpt, true, objOpt, objOpt, true, objOpt, objOpt, objOpt, objOpt, objOpt);
+        wbclass = (Excel.WorkbookClass)excelApp.Workbooks.Open(_fileName, objOpt, false, objOpt, objOpt, objOpt, true, objOpt, objOpt, true, objOpt, objOpt, objOpt, objOpt, objOpt);
     }
     /// <summary>
     /// 所有sheet的名称列表
@@ -50,6 +51,34 @@ public class ExcelHelper
         }
         return sheet;
     }
+
+    private bool IsNumeric(string number)
+    {
+        try
+        {
+            int.Parse(number);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private bool IsFloat(string number)
+    {
+        try
+        {
+            float.Parse(number);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    } 
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -59,12 +88,58 @@ public class ExcelHelper
     {
         Excel.Worksheet sheet = GetWorksheetByName(sheetName);
         //获取A1 到AM24范围的单元格
-        Excel.Range rang = sheet.get_Range("A1", "A3");
+       // Excel.Range rang = sheet.get_Range("A1", "A3");
 
         Excel.Range   range = sheet.UsedRange;
         int m_maxcol    = range.Columns.Count;
         int m_row       = range.Rows.Count;
 
+        if (m_row < 3 )
+        {
+            Console.WriteLine("GetContent, Name:{0},SheetName:{1}", _fileName, sheetName);
+            return -1;
+        }
+        ArrayList fieldTypes = new ArrayList();
+
+        for (int i = 1; i <= m_row; ++i)
+        {
+            String strtype = Convert.ToString((range.Cells[i, 1] as Excel.Range).Value2);
+            strtype.Trim();
+            strtype.ToUpper();
+             if(strtype == "INT" || strtype == "FLOAT" || strtype == "STRING" )
+            {
+                fieldTypes.Add(strtype);
+            }
+            else
+            {
+                Console.WriteLine("GetContent, Name:{0},SheetName:{1} rol{2}  Type Error ", _fileName, sheetName,i);
+                return -1;
+            }
+
+        }
+        //检测数据类型
+
+         for (int i = 3; i <= m_row; ++i)
+        {
+            for (int j = 1; j <= m_maxcol; ++j )
+            {
+                tempstring = Convert.ToString((range.Cells[i,j] as Excel.Range).Value2);
+
+             
+                    //数据
+                    if (fieldTypes[j-1] =="INT")
+                    {
+                        if (false == IsNumeric(tempstring))
+                        {
+                            
+                        }
+                    }
+                    else (fieldTypes[j-1] == "Float")
+                    {
+
+                    }
+                    
+                }
 
 
         FileStream fs = new FileStream("H:\\test.txt", FileMode.Create);
@@ -78,9 +153,13 @@ public class ExcelHelper
             {
                 tempstring = Convert.ToString((range.Cells[i,j] as Excel.Range).Value2);
 
+                
+                
                  byte[] data = new UTF8Encoding().GetBytes(tempstring);
-                 //开始写入
-                 fs.Write(data, 0, data.Length);
+                    //开始写入
+                    fs.Write(data, 0, data.Length);
+                
+  
                  if (j != m_maxcol)
                  {
                      tempstring = "\t";
@@ -90,6 +169,7 @@ public class ExcelHelper
                  }
                  
             }
+
 
             tempstring = "\r\n";
             byte[] data3 = new UTF8Encoding().GetBytes(tempstring);
