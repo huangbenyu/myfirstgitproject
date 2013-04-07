@@ -101,24 +101,24 @@ public class ExcelHelper
         }
         ArrayList fieldTypes = new ArrayList();
 
-        for (int i = 1; i <= m_row; ++i)
+        for (int i = 1; i <= m_maxcol; ++i)
         {
-            String strtype = Convert.ToString((range.Cells[i, 1] as Excel.Range).Value2);
-            strtype.Trim();
-            strtype.ToUpper();
+            String strtype = Convert.ToString((range.Cells[1, i] as Excel.Range).Value2);
+            strtype = strtype.Trim();
+            strtype =strtype.ToUpper();
              if(strtype == "INT" || strtype == "FLOAT" || strtype == "STRING" )
             {
                 fieldTypes.Add(strtype);
             }
             else
             {
-                Console.WriteLine("GetContent, Name:{0},SheetName:{1} rol{2}  Type Error ", _fileName, sheetName,i);
+                Console.WriteLine("GetContent, Name:{0},SheetName:{1} rol:{2}  Type Error ", _fileName, sheetName,i);
                 return -1;
             }
 
         }
         //检测数据类型
-
+         String tempstring;
          for (int i = 3; i <= m_row; ++i)
         {
             for (int j = 1; j <= m_maxcol; ++j )
@@ -127,26 +127,32 @@ public class ExcelHelper
 
              
                     //数据
-                    if (fieldTypes[j-1] =="INT")
+                    if (fieldTypes[j-1].ToString() =="INT")
                     {
                         if (false == IsNumeric(tempstring))
                         {
-                            
+                             Console.WriteLine("GetContent, Name:{0},SheetName:{1}  row:{2} rol:{3}  Type Error ", _fileName, sheetName,i,j);
+                             return -1;
                         }
                     }
-                    else (fieldTypes[j-1] == "Float")
+                    else if( fieldTypes[j-1].ToString() == "Float")
                     {
-
+                         if (false == IsFloat(tempstring))
+                        {
+                             Console.WriteLine("GetContent, Name:{0},SheetName:{1}  row:{2}  rol:{3}  Type Error ", _fileName, sheetName,i,j);
+                             return -1;
+                        }
                     }
                     
-                }
+             }
+         }
 
 
         FileStream fs = new FileStream("H:\\test.txt", FileMode.Create);
         //获得字节数组
         
 
-        String tempstring;
+      
         for (int i = 1; i <= m_row; ++i)
         {
             for (int j = 1; j <= m_maxcol; ++j )
