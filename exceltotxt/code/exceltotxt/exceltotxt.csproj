@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="Excel.cs" />
     <Compile Include="ExcelHelper.cs" />
     <Compile Include="Program.cs" />

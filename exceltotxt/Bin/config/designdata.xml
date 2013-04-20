@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ConfigData>
-	<ExcelFile  FileName="book.xlsx" SheetName="Sheet1"/>
+<ConfigData Serverpath =" "  ClientPath = " ">
+	<ExcelFile  FileName="book.xlsx" SheetName="Sheet1"  Client = " true"/>
 </ConfigData>

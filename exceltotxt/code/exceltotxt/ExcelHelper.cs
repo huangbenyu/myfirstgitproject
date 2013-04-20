@@ -15,9 +15,16 @@ public class ExcelHelper
     private Excel._Application excelApp;
     private string _fileName = string.Empty;
     private Excel.WorkbookClass wbclass;
+
+
+    public UTF8Encoding utf8 = new UTF8Encoding();
+    public string outstring;
+
+
     public ExcelHelper(string filename)
     {
         _fileName = filename;
+        outstring = "";
         excelApp = new Excel.Application();
         object objOpt = System.Reflection.Missing.Value;
         wbclass = (Excel.WorkbookClass)excelApp.Workbooks.Open(_fileName, objOpt, false, objOpt, objOpt, objOpt, true, objOpt, objOpt, true, objOpt, objOpt, objOpt, objOpt, objOpt);
@@ -76,7 +83,15 @@ public class ExcelHelper
         {
             return false;
         }
-    } 
+    }
+
+    public string GetUtf8String(string ansistring)
+    {
+   
+        byte[] data3 =  utf8.GetBytes(ansistring);
+
+        return utf8.GetString(data3, 0, data3.Length);
+    }
 
 
     /// <summary>
@@ -87,6 +102,10 @@ public class ExcelHelper
     public int GetContent(string sheetName)
     {
         Excel.Worksheet sheet = GetWorksheetByName(sheetName);
+        if (sheet == null)
+        {
+            return 1;
+        }
         //获取A1 到AM24范围的单元格
        // Excel.Range rang = sheet.get_Range("A1", "A3");
 
@@ -148,10 +167,7 @@ public class ExcelHelper
          }
 
 
-        FileStream fs = new FileStream("H:\\test.txt", FileMode.Create);
-        //获得字节数组
-        
-
+  
       
         for (int i = 1; i <= m_row; ++i)
         {
@@ -159,37 +175,20 @@ public class ExcelHelper
             {
                 tempstring = Convert.ToString((range.Cells[i,j] as Excel.Range).Value2);
 
-                
-                
-                 byte[] data = new UTF8Encoding().GetBytes(tempstring);
-                    //开始写入
-                    fs.Write(data, 0, data.Length);
+                outstring += GetUtf8String(tempstring);
+                   
                 
   
                  if (j != m_maxcol)
                  {
-                     tempstring = "\t";
-                     byte[] data2 = new UTF8Encoding().GetBytes(tempstring);
-                     //开始写入
-                     fs.Write(data2, 0, data2.Length);
+                     outstring  += "\t";
+                     outstring += GetUtf8String(tempstring);
                  }
                  
             }
-
-
-            tempstring = "\r\n";
-            byte[] data3 = new UTF8Encoding().GetBytes(tempstring);
-            //开始写入
-            fs.Write(data3, 0, data3.Length);
+             outstring  += "\r\n";
 
         }
-
-        //清空缓冲区、关闭流
-        fs.Flush();
-        fs.Close();
-
-  
-   
       
         return 0;
     }
@@ -199,5 +198,6 @@ public class ExcelHelper
         excelApp.Quit();
         excelApp = null;
     }
+
 
 }
