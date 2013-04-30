@@ -22,7 +22,7 @@ public class ExcelData
 
     public string GetSheetName()
     {
-        return fileName;
+        return sheetName;
     }
 
     public void Parse(XmlNode node)
@@ -56,6 +56,7 @@ public class ExcelData
 public class ExcelConfigFile
 {
     public System.Collections.ArrayList excelDatalist = new System.Collections.ArrayList();
+
     public string ServerPath;
     public string ClientPath;
 

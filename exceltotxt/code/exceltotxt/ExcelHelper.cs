@@ -26,8 +26,7 @@ public class ExcelHelper
         _fileName = filename;
         outstring = "";
         excelApp = new Excel.Application();
-        object objOpt = System.Reflection.Missing.Value;
-        wbclass = (Excel.WorkbookClass)excelApp.Workbooks.Open(_fileName, objOpt, false, objOpt, objOpt, objOpt, true, objOpt, objOpt, true, objOpt, objOpt, objOpt, objOpt, objOpt);
+       
     }
     /// <summary>
     /// 所有sheet的名称列表
@@ -44,6 +43,21 @@ public class ExcelHelper
     //    }
     //    return list;
     //}
+
+    public bool LoadExcelFile()
+    {
+        object objOpt = System.Reflection.Missing.Value;
+        try
+        {
+            wbclass = (Excel.WorkbookClass)excelApp.Workbooks.Open(_fileName, objOpt, false, objOpt, objOpt, objOpt, true, objOpt, objOpt, true, objOpt, objOpt, objOpt, objOpt, objOpt);
+            return true;
+        }
+        catch (System.Exception ex)
+        {
+            Console.WriteLine("ExcelHelper , Excel file  not exist  { 0 }", _fileName);
+        }
+        return false;
+    }
     public Excel.Worksheet GetWorksheetByName(string name)
     {
         Excel.Worksheet sheet = null;

@@ -16,15 +16,45 @@ namespace exceltotxt
         {
              ExcelHelper test = new ExcelHelper(excelFileName);
 
+            if (test.LoadExcelFile())
+            {
+                int result = test.GetContent(sheetName);
 
-            int result = test.GetContent(sheetName);
+                test.Close();
 
-            test.Close();
+                utf8configdata = test.outstring;
+                return result;
 
+            }
+            utf8configdata = "";
+            return -1;
+          
 
-            utf8configdata = test.outstring;
+        }
+        static public int SaveExcelData(string filename, string exceldata)
+        {
+            if (File.Exists(filename))
+            {
+                StreamReader sr = new StreamReader(filename);
+                string olddata = sr.ReadToEnd();
 
-            return result;
+                sr.Close();
+
+                if (exceldata == olddata)
+                {              
+                    return 1;
+                }
+            }
+          
+
+            {
+                StreamWriter sw;
+                sw = new StreamWriter(filename, false);
+                sw.Write(exceldata);
+                sw.Close();
+            }
+
+            return 0;
 
         }
         
@@ -32,25 +62,39 @@ namespace exceltotxt
         {
 
 
-            //string filename = "./config/designdata.xml";
+            string filename = "./config/designdata.xml";
 
-            //XmlDocument srcFile = new XmlDocument();
+            XmlDocument srcFile = new XmlDocument();
 
-            //srcFile.Load(filename);
+            srcFile.Load(filename);
 
-            //ExcelConfigFile config = new ExcelConfigFile();
-            //config.Parse(srcFile);
-
-
-            string outdata;
-
-            GetExcelData("H:/workspace/myfirstgitproject/exceltotxt/Bin/data/test.xlsx", "Sheet1",out outdata);
+            ExcelConfigFile config = new ExcelConfigFile();
+            config.Parse(srcFile);
 
 
-            StreamWriter sw;
-            sw = new StreamWriter("./data/test.sheet1.txt" , false);
-            sw.WriteLine(outdata);
-            sw.Close();
+            Console.WriteLine("start !!!");
+            foreach (ExcelData exceldata in config.excelDatalist)
+            {
+
+                string outdata;
+
+                string srcfilename = Directory.GetCurrentDirectory()+"/data/" + exceldata.GetFileName() + ".xlsx";
+                if (File.Exists(srcfilename))
+                {
+
+                    GetExcelData(srcfilename, exceldata.GetSheetName(), out outdata);
+
+                    string outfilename = Directory.GetCurrentDirectory() + "/data/temp/" + exceldata.GetFileName() + "." + exceldata.GetSheetName() + ".txt";
+
+                    SaveExcelData(outfilename, outdata);
+                }
+
+            }
+
+            //StreamWriter sw;
+            //sw = new StreamWriter("./data/test.sheet1.txt" , false);
+            //sw.WriteLine(outdata);
+            //sw.Close();
 
 
             ////Excel.ReadExcelSheet("Book1.xlsx", "sheet1");
@@ -68,7 +112,34 @@ namespace exceltotxt
             ////    Console.WriteLine(a);
             ////}
 
-            Console.WriteLine("Finish  Content");
+            Console.WriteLine("Copy file to Server and client directory");
+
+            foreach (ExcelData exceldata in config.excelDatalist)
+            {
+
+     
+
+                string srcfilename = Directory.GetCurrentDirectory() + "/data/temp/" + exceldata.GetFileName() + "." + exceldata.GetSheetName() + ".txt";
+
+                if (File.Exists(srcfilename))
+                {
+
+                    string serverfile = Directory.GetCurrentDirectory() + config.ServerPath + exceldata.GetFileName() + "." + exceldata.GetSheetName() + ".txt";
+
+                    File.Copy(srcfilename, serverfile,true);
+
+                    string clientfile = Directory.GetCurrentDirectory() + config.ClientPath + exceldata.GetFileName() + "." + exceldata.GetSheetName() + ".txt";
+
+
+                    File.Copy(srcfilename, clientfile,true);
+
+             
+                }
+
+            }
+
+
+            Console.WriteLine("Finish  !!!");
 
         }
     }
