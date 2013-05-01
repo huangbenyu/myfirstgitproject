@@ -9,35 +9,19 @@ using System.Text;
 
 using System.Xml;
 
-public class ExcelData
+public class Sheetdata
 {
-
-    public string fileName;
     public string sheetName;
-    public bool  client;
-    public string GetFileName()
-    {
-        return fileName;
-    }
-
-    public string GetSheetName()
-    {
-        return sheetName;
-    }
+    public bool client;
 
     public void Parse(XmlNode node)
     {
-        XmlAttribute xmlName = node.Attributes["FileName"];
-        if (xmlName == null)
-        {
-            throw new Exception("VI_Define no [FileName] atrribute!");
-        }
-        fileName = xmlName.Value;
+        
 
-        XmlAttribute xmlType = node.Attributes["SheetName"];
+        XmlAttribute xmlType = node.Attributes["Name"];
         if (xmlType == null)
         {
-            throw new Exception("VI_Define no [SheetName] atrribute!");
+            throw new Exception("Sheetdata no Name] atrribute!");
         }
         sheetName = xmlType.Value;
 
@@ -45,10 +29,46 @@ public class ExcelData
         XmlAttribute xmlClient = node.Attributes["Client"];
         if (xmlClient == null)
         {
-            throw new Exception("VI_Define no [Client] atrribute!");
+            throw new Exception("Sheetdata no [Client] atrribute!");
         }
         client = Convert.ToBoolean(xmlClient.Value);
 
+    }
+
+}
+public class ExcelData
+{
+    public string fileName;
+
+    public System.Collections.ArrayList sheetDatalist = new System.Collections.ArrayList();
+
+    public string GetFileName()
+    {
+        return fileName;
+    }
+
+    public void Parse(XmlNode node)
+    {
+        XmlAttribute xmlName = node.Attributes["FileName"];
+        if (xmlName == null)
+        {
+            throw new Exception("ExcelData no [FileName] atrribute!");
+        }
+        fileName = xmlName.Value;
+
+
+        XmlNodeList xmldefinesList = node.SelectNodes("SheetName");
+        for (int i = 0; i < xmldefinesList.Count; i++)
+        {
+            XmlNode xmldefines = xmldefinesList[i];
+            Sheetdata sheetData = new Sheetdata();
+            sheetData.Parse(xmldefines);
+
+            sheetDatalist.Add(sheetData);
+
+        }
+
+       
     }
 }
 
@@ -90,7 +110,7 @@ public class ExcelConfigFile
             throw new Exception("protocol no [ClientPath] atrribute!");
         }
 
-        ClientPath = xmlName.Value; ;
+        ClientPath = xmlName.Value;
 
         //define
 

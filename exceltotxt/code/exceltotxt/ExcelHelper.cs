@@ -44,6 +44,10 @@ public class ExcelHelper
     //    return list;
     //}
 
+    public void ClearData()
+    {
+        outstring="";
+    }
     public bool LoadExcelFile()
     {
         object objOpt = System.Reflection.Missing.Value;
