@@ -71,7 +71,8 @@ namespace exceltotxt
         {
 
 
-           
+			System.Globalization.CultureInfo CurrentCI = System.Threading.Thread.CurrentThread.CurrentCulture;
+			System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
             string filename = "./config/designdata.xml";
 
