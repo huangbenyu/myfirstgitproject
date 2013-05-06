@@ -85,39 +85,39 @@ public class ExcelHelper
         return sheet;
     }
 
-    private bool IsNumeric(string number)
-    {
-        try
-        {
-            int.Parse(number);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+	private bool IsNumeric(string number)
+	{
+		try
+		{
+			int.Parse(number);
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
+	}
 
-    private bool IsFloat(string number)
-    {
-        try
-        {
-            float.Parse(number);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+	private bool IsFloat(string number)
+	{
+		try
+		{
+			float.Parse(number);
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
+	}
 
-    public string GetUtf8String(string ansistring)
-    {
-   
-        byte[] data3 =  utf8.GetBytes(ansistring);
+	public string GetUtf8String(string ansistring)
+	{
 
-        return utf8.GetString(data3, 0, data3.Length);
-    }
+		byte[] data3 = utf8.GetBytes(ansistring);
+
+		return utf8.GetString(data3, 0, data3.Length);
+	}
 
 
     /// <summary>

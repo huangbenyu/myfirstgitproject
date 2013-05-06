@@ -48,7 +48,7 @@ namespace Exceltotxt
 
         static public int GetExcelData(string excelFileName, ExcelData exceldata)
         {
-            ExcelHelper test = new ExcelHelper(excelFileName);
+			DBExcelHelper test = new DBExcelHelper(excelFileName);
 
             if (test.LoadExcelFile())
             {
