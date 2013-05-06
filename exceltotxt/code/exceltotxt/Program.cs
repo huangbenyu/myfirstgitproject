@@ -6,16 +6,21 @@ using System.Text;
 using System.Xml;
 
 using System.IO;
-namespace exceltotxt
+
+using log4net;
+using log4net.Config;
+
+
+namespace Exceltotxt
 {
     class Program
     {
-
-
+		public static readonly ILog Logger = LogManager.GetLogger("server");
 
         static public int SaveExcelData(string filename, string exceldata)
         {
-            if (File.Exists(filename))
+			Logger.DebugFormat("SaveExcelData :{0}", filename);
+			if (File.Exists(filename))
             {
                 StreamReader sr = new StreamReader(filename);
                 string olddata = sr.ReadToEnd();
@@ -47,11 +52,14 @@ namespace exceltotxt
 
             if (test.LoadExcelFile())
             {
-                foreach (Sheetdata sheetdata in exceldata.sheetDatalist)
+				Logger.InfoFormat("Read  Excel File Name :{0}" ,excelFileName );
+				foreach (Sheetdata sheetdata in exceldata.sheetDatalist)
                 {
                     test.ClearData();
 
                     int result = test.GetContent(sheetdata.sheetName);
+
+					Logger.InfoFormat("Get  Sheet Content :{0}", sheetdata.sheetName);
 
                     if (0 == result)
                     {
@@ -69,6 +77,9 @@ namespace exceltotxt
 
         static void Main(string[] args)
         {
+			
+			XmlConfigurator.Configure(new System.IO.FileInfo("log4net.xml"));
+
 
 
 			System.Globalization.CultureInfo CurrentCI = System.Threading.Thread.CurrentThread.CurrentCulture;
@@ -93,7 +104,7 @@ namespace exceltotxt
             
                 string srcfilename = Directory.GetCurrentDirectory()+"/data/" + exceldata.GetFileName() + ".xlsx";
 
-                Console.WriteLine("Read Excel File : {0}", srcfilename);
+                Logger.InfoFormat("Load Excel File : {0}", srcfilename);
 
                 if (File.Exists(srcfilename))
                 {
@@ -103,7 +114,7 @@ namespace exceltotxt
 
             }
 
-            Console.WriteLine("Copy file to Server and client directory");
+			Logger.Info("Copy file to Server and client directory");
 
             foreach (ExcelData exceldata in config.excelDatalist)
             {
@@ -128,7 +139,7 @@ namespace exceltotxt
             }
 
 
-            Console.WriteLine("Finish  !!!");
+			Logger.Info("Finish  !!!");
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey(true);
