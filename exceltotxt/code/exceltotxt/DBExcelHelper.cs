@@ -16,7 +16,7 @@ namespace Exceltotxt
 		private string _fileName = string.Empty;
 
 
-		OleDbConnection conn = null;  
+        private OleDbConnection conn = null;  
 		public UTF8Encoding utf8 = new UTF8Encoding();
 		public string outstring;
 
@@ -86,6 +86,7 @@ namespace Exceltotxt
 				// 初始化连接，并打开  
 				conn = new OleDbConnection(connStr);
 				conn.Open();
+                return true;
 
 			}
 			catch (System.Exception ex)
@@ -97,10 +98,13 @@ namespace Exceltotxt
 		}
 		public int GetContent(string sheetName)
 		{
-			OleDbDataAdapter da = null;
-			string sql_F = "Select * FROM [{0}]";
+			
 
-			da.SelectCommand = new OleDbCommand(String.Format(sql_F, sheetName), conn);
+			string sql_F =String.Format("Select * FROM [{0}$]", sheetName);
+
+
+            OleDbDataAdapter da = new OleDbDataAdapter(sql_F, conn);  
+
 
 			DataSet dsItem = new DataSet();
 			da.Fill(dsItem, sheetName);
@@ -126,7 +130,7 @@ namespace Exceltotxt
 
 				ArrayList fieldTypes = new ArrayList();
 
-				for (int i = 1; i <= m_maxcol; ++i)
+				for (int i = 0; i < m_maxcol; ++i)
 				{
 					String strtype = table.Rows[i][0].ToString();
 					strtype = strtype.Trim();
@@ -144,15 +148,15 @@ namespace Exceltotxt
 				}
 				//检测数据类型
 				String tempstring;
-				for (int i = 4; i <= m_row; ++i)
+				for (int i = 3; i < m_row; ++i)
 				{
-					for (int j = 1; j <= m_maxcol; ++j)
+					for (int j = 0; j < m_maxcol; ++j)
 					{
 						tempstring = table.Rows[i][j].ToString();
 
 
 						//数据
-						if (fieldTypes[j - 1].ToString() == "INT")
+						if (fieldTypes[j].ToString() == "INT")
 						{
 
 							if (tempstring.Length != 0 && false == IsNumeric(tempstring))
@@ -161,7 +165,7 @@ namespace Exceltotxt
 								return -1;
 							}
 						}
-						else if (fieldTypes[j - 1].ToString() == "Float")
+						else if (fieldTypes[j].ToString() == "Float")
 						{
 							if (tempstring.Length != 0 && false == IsFloat(tempstring))
 							{
@@ -174,9 +178,9 @@ namespace Exceltotxt
 				}
 
 
-				for (int i = 1; i <= 3; ++i)
+				for (int i = 0; i < 3; ++i)
 				{
-					for (int j = 1; j <= m_maxcol; ++j)
+					for (int j = 0; j < m_maxcol; ++j)
 					{
 						tempstring = "";
 						tempstring = table.Rows[i][j].ToString();
@@ -196,21 +200,21 @@ namespace Exceltotxt
 
 				}
 
-				for (int i = 4; i <= m_row; ++i)
+				for (int i = 3; i <m_row; ++i)
 				{
-					for (int j = 1; j <= m_maxcol; ++j)
+					for (int j = 0; j <= m_maxcol; ++j)
 					{
 						tempstring = "";
 						tempstring = table.Rows[i][j].ToString();
 
 
 						//数据
-						if (fieldTypes[j - 1].ToString() == "INT" && tempstring.Length == 0)
+						if (fieldTypes[j].ToString() == "INT" && tempstring.Length == 0)
 						{
 							outstring += "0";
 
 						}
-						else if (tempstring.Length == 0 && fieldTypes[j - 1].ToString() == "Float")
+						else if (tempstring.Length == 0 && fieldTypes[j].ToString() == "Float")
 						{
 							outstring += "0";
 						}
