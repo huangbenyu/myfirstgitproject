@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
+using Exceltotxt;
 
 public class ExcelHelper
 {
@@ -54,11 +55,18 @@ public class ExcelHelper
         try
         {
             wbclass = (Excel.WorkbookClass)excelApp.Workbooks.Open(_fileName, objOpt, false, objOpt, objOpt, objOpt, true, objOpt, objOpt, true, objOpt, objOpt, objOpt, objOpt, objOpt);
+			if (wbclass == null)
+			{
+				Program.Logger.ErrorFormat("ExcelHelper , Excel file  not exist  {0}",_fileName);
+			}
             return true;
         }
         catch (System.Exception ex)
         {
-            Console.WriteLine("ExcelHelper , Excel file  not exist  { 0 }", _fileName);
+
+			Program.Logger.Error("ExcelHelper , Excel file  not exist", ex);
+			excelApp.Quit();
+			excelApp = null;
         }
         return false;
     }
@@ -77,39 +85,39 @@ public class ExcelHelper
         return sheet;
     }
 
-    private bool IsNumeric(string number)
-    {
-        try
-        {
-            int.Parse(number);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+	private bool IsNumeric(string number)
+	{
+		try
+		{
+			int.Parse(number);
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
+	}
 
-    private bool IsFloat(string number)
-    {
-        try
-        {
-            float.Parse(number);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+	private bool IsFloat(string number)
+	{
+		try
+		{
+			float.Parse(number);
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
+	}
 
-    public string GetUtf8String(string ansistring)
-    {
-   
-        byte[] data3 =  utf8.GetBytes(ansistring);
+	public string GetUtf8String(string ansistring)
+	{
 
-        return utf8.GetString(data3, 0, data3.Length);
-    }
+		byte[] data3 = utf8.GetBytes(ansistring);
+
+		return utf8.GetString(data3, 0, data3.Length);
+	}
 
 
     /// <summary>
@@ -133,7 +141,7 @@ public class ExcelHelper
 
         if (m_row < 3 )
         {
-            Console.WriteLine("GetContent, Name:{0},SheetName:{1}", _fileName, sheetName);
+			Program.Logger.ErrorFormat("sheet data Error, Name:{0},SheetName:{1}", _fileName, sheetName);
             return -1;
         }
         ArrayList fieldTypes = new ArrayList();
@@ -149,14 +157,14 @@ public class ExcelHelper
             }
             else
             {
-                Console.WriteLine("GetContent, Name:{0},SheetName:{1} rol:{2}  Type Error ", _fileName, sheetName,i);
+				Program.Logger.ErrorFormat("Type, Name:{0},SheetName:{1} rol:{2}  Type Error ", _fileName, sheetName, i);
                 return -1;
             }
 
         }
         //检测数据类型
          String tempstring;
-         for (int i = 3; i <= m_row; ++i)
+         for (int i = 4; i <= m_row; ++i)
         {
             for (int j = 1; j <= m_maxcol; ++j )
             {
@@ -166,17 +174,18 @@ public class ExcelHelper
                     //数据
                     if (fieldTypes[j-1].ToString() =="INT")
                     {
-                        if (false == IsNumeric(tempstring))
+                        
+						if (tempstring.Length !=0 && false == IsNumeric(tempstring))
                         {
-                             Console.WriteLine("GetContent, Name:{0},SheetName:{1}  row:{2} rol:{3}  Type Error ", _fileName, sheetName,i,j);
+							Program.Logger.ErrorFormat("GetContent, Name:{0},SheetName:{1}  row:{2} rol:{3}  Type  [INT ] Error ", _fileName, sheetName, i, j);
                              return -1;
                         }
                     }
                     else if( fieldTypes[j-1].ToString() == "Float")
                     {
-                         if (false == IsFloat(tempstring))
+                         if (tempstring.Length !=0 && false == IsFloat(tempstring)) 
                         {
-                             Console.WriteLine("GetContent, Name:{0},SheetName:{1}  row:{2}  rol:{3}  Type Error ", _fileName, sheetName,i,j);
+							Program.Logger.ErrorFormat("GetContent, Name:{0},SheetName:{1}  row:{2}  rol:{3}  Type[Float] Error ", _fileName, sheetName, i, j);
                              return -1;
                         }
                     }
@@ -186,12 +195,12 @@ public class ExcelHelper
 
 
   
-      
-        for (int i = 1; i <= m_row; ++i)
+        for (int i = 1; i <= 3; ++i)
         {
             for (int j = 1; j <= m_maxcol; ++j )
             {
-                tempstring = Convert.ToString((range.Cells[i,j] as Excel.Range).Value2);
+				tempstring = "";
+				tempstring = Convert.ToString((range.Cells[i,j] as Excel.Range).Value2);
 
                 outstring += GetUtf8String(tempstring);
                    
@@ -207,6 +216,42 @@ public class ExcelHelper
              outstring  += "\r\n";
 
         }
+
+		for (int i = 4; i <= m_row; ++i)
+		{
+			for (int j = 1; j <= m_maxcol; ++j)
+			{
+				tempstring = "";
+				tempstring = Convert.ToString((range.Cells[i, j] as Excel.Range).Value2);
+
+
+				//数据
+				if (fieldTypes[j - 1].ToString() == "INT" && tempstring.Length == 0)
+				{
+					outstring += "0";
+				
+				}
+				else if (  tempstring.Length == 0 && fieldTypes[j - 1].ToString() == "Float")
+				{
+					outstring += "0";
+				}
+				else
+				{
+					outstring += GetUtf8String(tempstring);
+				}
+
+				if (j != m_maxcol)
+				{
+					outstring += "\t";
+					
+				}
+
+			}
+			outstring += "\r\n";
+
+		}
+
+
       
         return 0;
     }
