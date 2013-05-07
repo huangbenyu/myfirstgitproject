@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ConfigData Serverpath =" /data/server/"  ClientPath = "/data/client/">
-	<ExcelFile  FileName="Props_rus">
+<ConfigData Excelpath ="/data/" Serverpath =" /data/server/"  ClientPath = "/data/client/">
+	<ExcelFile  FileName="Props_ch">
 		<SheetName Name = "General"  Client = "true"/>
 	</ExcelFile>
 	

@@ -46,7 +46,7 @@ namespace Exceltotxt
         }
 
 
-        static public int GetExcelData(string excelFileName, ExcelData exceldata)
+        static public int GetExcelData(string excelFileName, ExcelData exceldata ,string excelpath)
         {
 			DBExcelHelper test = new DBExcelHelper(excelFileName);
 
@@ -63,7 +63,7 @@ namespace Exceltotxt
 
                     if (0 == result)
                     {
-                        string outfilename = Directory.GetCurrentDirectory() + "/data/temp/" + exceldata.GetFileName() + "." + sheetdata.sheetName + ".txt";
+                        string outfilename = Directory.GetCurrentDirectory() + excelpath + "temp/" + exceldata.GetFileName() + "." + sheetdata.sheetName + ".txt";
 
                         SaveExcelData(outfilename, test.outstring);
                     }
@@ -77,8 +77,8 @@ namespace Exceltotxt
 
         static void Main(string[] args)
         {
-			
-			XmlConfigurator.Configure(new System.IO.FileInfo("log4net.xml"));
+
+			XmlConfigurator.Configure(new System.IO.FileInfo("./config/log4net.xml"));
 
 
 
@@ -95,32 +95,50 @@ namespace Exceltotxt
             config.Parse(srcFile);
 
 
+
+			string tempath = Directory.GetCurrentDirectory() + config.Excelpath + "temp/";
+			if (!System.IO.Directory.Exists(tempath))
+				//执行以下这条语句,就可以创建该文件夹了
+				System.IO.Directory.CreateDirectory(tempath);
+
             Console.WriteLine("start !!!");
 
     
             foreach (ExcelData exceldata in config.excelDatalist)
             {
 
-            
-                string srcfilename = Directory.GetCurrentDirectory()+"/data/" + exceldata.GetFileName() + ".xlsx";
+
+				string srcfilename = Directory.GetCurrentDirectory() + config.Excelpath + exceldata.GetFileName() + ".xlsx";
 
                 Logger.InfoFormat("Load Excel File : {0}", srcfilename);
 
                 if (File.Exists(srcfilename))
                 {
-
-                    GetExcelData(srcfilename, exceldata);
+					GetExcelData(srcfilename, exceldata, config.Excelpath);
                 }
 
             }
 
 			Logger.Info("Copy file to Server and client directory");
+			//检测目录是否存在
+			
+			string serverpaths = Directory.GetCurrentDirectory() + config.ServerPath;
+			if (!System.IO.Directory.Exists(serverpaths))
+				//执行以下这条语句,就可以创建该文件夹了
+				System.IO.Directory.CreateDirectory(serverpaths);
+
+
+			string clientpath = Directory.GetCurrentDirectory() + config.ClientPath;
+			if (!System.IO.Directory.Exists(clientpath))
+				//执行以下这条语句,就可以创建该文件夹了
+				System.IO.Directory.CreateDirectory(clientpath);
+
 
             foreach (ExcelData exceldata in config.excelDatalist)
             {
                 foreach (Sheetdata sheetdata in exceldata.sheetDatalist)
                 {
-                    string srcfilename = Directory.GetCurrentDirectory() + "/data/temp/" + exceldata.GetFileName() + "." + sheetdata.sheetName + ".txt";
+					string srcfilename = Directory.GetCurrentDirectory() + config.Excelpath + "temp/" + exceldata.GetFileName() + "." + sheetdata.sheetName + ".txt";
 
                     if (File.Exists(srcfilename))
                     {

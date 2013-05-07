@@ -79,6 +79,7 @@ public class ExcelConfigFile
 
     public string ServerPath;
     public string ClientPath;
+	public string Excelpath; 
 
     public void Parse(XmlNode doc)
     {
@@ -111,6 +112,16 @@ public class ExcelConfigFile
         }
 
         ClientPath = xmlName.Value;
+
+
+		xmlName = root.Attributes["Excelpath"];
+		if (xmlName == null)
+		{
+			throw new Exception("protocol no [Excelpath] atrribute!");
+		}
+
+		Excelpath = xmlName.Value;
+
 
         //define
 
