@@ -204,12 +204,9 @@ public class ExcelHelper
 
                 outstring += GetUtf8String(tempstring);
                    
-                
-  
                  if (j != m_maxcol)
                  {
                      outstring  += "\t";
-                     outstring += GetUtf8String(tempstring);
                  }
                  
             }
