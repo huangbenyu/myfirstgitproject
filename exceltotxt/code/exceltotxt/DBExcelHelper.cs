@@ -160,7 +160,7 @@ namespace Exceltotxt
 					}
 					else
 					{
-						Program.Logger.ErrorFormat("Type, Name:{0},SheetName:{1} rol:{2}  Type Error ", _fileName, sheetName, rol);
+						Program.Logger.ErrorFormat("Type, Name:{0},SheetName:{1} rol:{2}  Type Error {3}  ", _fileName, sheetName, rol, strtype);
 						return -1;
 					}
 
