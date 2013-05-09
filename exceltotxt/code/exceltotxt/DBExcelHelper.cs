@@ -170,11 +170,15 @@ namespace Exceltotxt
 				String tempstring;
 				for (int i = 2; i < m_row; ++i)
 				{
+					bool flag = false;
 					for (int j = 0; j < m_maxcol; ++j)
 					{
 						tempstring = table.Rows[i][j].ToString();
-
-
+						if (tempstring.Length!=0)
+						{
+							flag = true;
+						}
+						
 						//数据
 						if (fieldTypes[j].ToString() == "INT")
 						{
@@ -184,6 +188,7 @@ namespace Exceltotxt
 								Program.Logger.ErrorFormat("GetContent, Name:{0},SheetName:{1}  row:{2} rol:{3}  Type  [INT ] Error ", _fileName, sheetName, i, j);
 								return -1;
 							}
+
 						}
 						else if (fieldTypes[j].ToString() == "FLOAT")
 						{
@@ -195,7 +200,33 @@ namespace Exceltotxt
 						}
 
 					}
+					if (false == flag)
+					{
+						m_row = i;
+						break;
+
+					}
 				}
+
+				//检测第一列是否有重复数据
+
+				Dictionary<string, int> myDic = new Dictionary<string, int>();
+				for (int i = 2; i < m_row; ++i)
+				{
+					tempstring = table.Rows[i][0].ToString();
+					if (myDic.ContainsKey(tempstring))
+					{
+						Program.Logger.WarnFormat("GetContent, Name:{0},SheetName:{1}  row:{2}  rol:{3} duplicate record :{4} ", _fileName, sheetName, i, 1 ,tempstring);
+					}
+					else
+					{
+						myDic.Add(tempstring, 1);
+					}
+				}
+
+
+				//生成数据
+
 				for (int i = 0; i < fieldTypes.Count; ++i )
 				{
 

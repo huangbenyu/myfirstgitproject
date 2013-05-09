@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ConfigData Excelpath ="/data/" Serverpath =" /data/server/"  ClientPath = "/data/client/">
-	<ExcelFile  FileName="Props_ch">
-		<SheetName Name = "General"  Client = "true"/>
+	<ExcelFile  FileName="test">
+		<SheetName Name = "sheet1"  Client = "true"/>
 	</ExcelFile>
 	
 </ConfigData>

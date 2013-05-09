@@ -4,7 +4,10 @@
     <mapping>
         <level value="ERROR" />
         <foreColor value="Red" />
-       
+    </mapping>
+       <mapping>
+     <level value="WARN" />
+        <foreColor value="Yellow" />
     </mapping>
     <mapping>
     <level value="INFO" />

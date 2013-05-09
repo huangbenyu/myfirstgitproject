@@ -110,7 +110,7 @@ namespace Exceltotxt
 
 				string srcfilename = Directory.GetCurrentDirectory() + config.Excelpath + exceldata.GetFileName() + ".xlsx";
 
-                Logger.InfoFormat("Load Excel File : {0}", srcfilename);
+               // Logger.InfoFormat("Load Excel File : {0}", srcfilename);
 
                 if (File.Exists(srcfilename))
                 {
