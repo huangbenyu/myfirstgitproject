@@ -248,9 +248,7 @@ namespace Exceltotxt
 
 						outstring += GetUtf8String(tempstring);
 
-
-
-						if (j != m_maxcol)
+						if (j != m_maxcol-1)
 						{
 							outstring += "\t";
 							
@@ -284,7 +282,7 @@ namespace Exceltotxt
 							outstring += GetUtf8String(tempstring);
 						}
 
-						if (j != m_maxcol)
+						if (j != m_maxcol-1)
 						{
 							outstring += "\t";
 
